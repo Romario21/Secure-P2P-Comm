@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "857553737158",
+    "firebase_url": "https://p2p-comm.firebaseio.com",
+    "project_id": "p2p-comm",
+    "storage_bucket": "p2p-comm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857553737158:android:c40b81f1b88b1b32844ec7",
+        "android_client_info": {
+          "package_name": "com.example.securep2pcomm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "857553737158-av3is8pbpmllo0fq2l5ubqok6j6t1kbm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.securep2pcomm",
+            "certificate_hash": "f9dee1934acb01f0e3506385500b73dbddeb0269"
+          }
+        },
+        {
+          "client_id": "857553737158-dm5qiuvur30hqrcarb3ifqovbos2prub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoc0F1xD4n9kq79Mbg47BgcV21iEUuSC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857553737158-dm5qiuvur30hqrcarb3ifqovbos2prub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
