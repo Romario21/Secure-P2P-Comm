@@ -30,7 +30,7 @@ public class LoadScreen extends AppCompatActivity {
                 }
 
                 else {
-                    startActivity(new Intent(LoadScreen.this, StartScreen.class));
+                    startActivity(new Intent(LoadScreen.this, SecureComm.class));
                     finish();
                 }
             }

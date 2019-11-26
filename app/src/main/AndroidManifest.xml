@@ -37,6 +37,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".SecureComm"
+            android:label="@string/title_activity_secure_comm"
+            android:theme="@style/MyThemeFullScreen"/>
+        <activity
             android:name=".SignUpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyThemeFullScreen" />
