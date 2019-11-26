@@ -20,6 +20,11 @@ public class SecureComm extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.navigation_rooms:
+                    RoomsFragment rooms = new RoomsFragment();
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, rooms)
+                            .commit();
                     return true;
 
                 case R.id.navigation_home:
@@ -31,6 +36,11 @@ public class SecureComm extends AppCompatActivity {
                     return true;
 
                 case R.id.navigation_options:
+                    OptionsFragment options = new OptionsFragment();
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container,options)
+                            .commit();
                     return true;
             }
 
