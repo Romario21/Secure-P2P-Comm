@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.securep2pcomm.ui.MainFragment;
+import com.example.securep2pcomm.ui.OptionsFragment;
+import com.example.securep2pcomm.ui.RoomsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class SecureComm extends AppCompatActivity {
