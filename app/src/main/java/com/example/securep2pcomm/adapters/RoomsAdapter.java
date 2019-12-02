@@ -1,6 +1,5 @@
 package com.example.securep2pcomm.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import com.example.securep2pcomm.helpers.RoomChat;
 
 import java.util.ArrayList;
 
-public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder>{
+public class RoomsAdapter extends RecyclerView.Adapter<RoomsAdapter.RoomViewHolder>{
 
     public interface OnRoomClickListener{
         void onClick(RoomChat clicked);
@@ -23,7 +22,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private OnRoomClickListener mListener;
     private ArrayList<RoomChat> rooms;
 
-    public RoomAdapter(ArrayList<RoomChat> rm, OnRoomClickListener clicked){
+    public RoomsAdapter(ArrayList<RoomChat> rm, OnRoomClickListener clicked){
         rooms = rm;
         this.mListener = clicked;
     }

@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 
 
 import com.example.securep2pcomm.R;
-import com.example.securep2pcomm.adapters.RoomAdapter;
+import com.example.securep2pcomm.adapters.RoomsAdapter;
 import com.example.securep2pcomm.helpers.RoomChat;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,7 +39,7 @@ public class MainFragment extends Fragment {
     private FirebaseUser currentFirebaseUser;
 
     private RecyclerView recyclerView;
-    private RoomAdapter roomAdapter;
+    private RoomsAdapter roomAdapter;
 
     public MainFragment() {
         // Required empty public constructor
@@ -109,13 +109,13 @@ public class MainFragment extends Fragment {
                     );
                 }
 
-                roomAdapter = new RoomAdapter(rm, listener);
+                roomAdapter = new RoomsAdapter(rm, listener);
                 recyclerView.setAdapter(roomAdapter);
             }
         });
     }
 
-    RoomAdapter.OnRoomClickListener listener = new RoomAdapter.OnRoomClickListener() {
+    RoomsAdapter.OnRoomClickListener listener = new RoomsAdapter.OnRoomClickListener() {
         @Override
         public void onClick(RoomChat clicked) {
             Log.i(TAG, "onClick: " + clicked.getID());
