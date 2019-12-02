@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.securep2pcomm.R;
+import com.example.securep2pcomm.SecureComm;
 import com.example.securep2pcomm.StartScreen;
 import com.example.securep2pcomm.adapters.OptionsAdapter;
 import com.example.securep2pcomm.adapters.RoomsAdapter;
@@ -102,6 +103,15 @@ public class OptionsFragment extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         Log.i(TAG, "onSuccess: ");
+
+                                        Map<String, Object> addRoom = new HashMap<>();
+                                        addRoom.put("name",getEntry);
+                                        db.collection("users")
+                                                .document(currentFirebaseUser.getUid())
+                                                .collection("rooms")
+                                                .document(documentReference.getId())
+                                                .set(addRoom);
+
                                         loadMyRooms();
                                     }
                                 })
@@ -168,8 +178,62 @@ public class OptionsFragment extends Fragment {
 
     OptionsAdapter.OnOptionsClickListener listener = new OptionsAdapter.OnOptionsClickListener() {
         @Override
-        public void onClick(Room clicked) {
+        public void onClick(final Room clicked) {
             Log.i(TAG, "onClick: " + clicked.getID());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Delete Room");
+            builder.setMessage("The room will be deleted along with any messages within.");
+            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    db.collection("rooms")
+                            .document(clicked.getID())
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error deleting document", e);
+                                }
+                            });
+
+                    db.collection("users")
+                            .document(currentFirebaseUser.getUid())
+                            .collection("rooms")
+                            .document(clicked.getID())
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                    Toast.makeText(getActivity(), "Room '" + clicked.getName() + "' was deleted",
+                                            Toast.LENGTH_SHORT).show();
+                                    loadMyRooms();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error deleting document", e);
+                                }
+                            });
+
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
         }
     };
 }

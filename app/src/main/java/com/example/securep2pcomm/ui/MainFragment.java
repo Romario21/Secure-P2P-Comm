@@ -66,9 +66,9 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         String test = documentSnapshot.getString("active");
-                        if(test.equals("true")){
-                            loadOpenRooms();
-                        }
+                        //if(test.equals("true")){
+                            //loadOpenRooms();
+                        //}
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -81,7 +81,7 @@ public class MainFragment extends Fragment {
 
         return rootview;
     }
-
+    /*
     private void getAllRooms(EventListener<QuerySnapshot> listener){
         db.collection("room")
                 .whereEqualTo("student", currentFirebaseUser.getUid())
@@ -121,7 +121,7 @@ public class MainFragment extends Fragment {
             Log.i(TAG, "onClick: " + clicked.getID());
 
         }
-    };
+    };*/
 
 
 }
