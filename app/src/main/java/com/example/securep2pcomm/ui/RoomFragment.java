@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -44,6 +45,8 @@ public class RoomFragment extends Fragment {
     private FirebaseUser currentFirebaseUser;
     private FirebaseFirestore db;
     private RecyclerView chats;
+
+    private Button leave;
 
     private static final String ARG_PARAM1 = "room_id";
     private static final String ARG_PARAM2 = "room_name";
@@ -84,12 +87,16 @@ public class RoomFragment extends Fragment {
 
         message = rootview.findViewById(R.id.message);
         mButton = rootview.findViewById(R.id.send);
+        leave = rootview.findViewById(R.id.leave);
         mDisplay = rootview.findViewById(R.id.name);
 
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         db = FirebaseFirestore.getInstance();
 
         mDisplay.setText(user_name);
+
+        if(user_id.equals(currentFirebaseUser.getUid()))
+            leave.setVisibility(View.INVISIBLE);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,16 +107,38 @@ public class RoomFragment extends Fragment {
             }
         });
 
+        leave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                db.collection("room")
+                        .document(clicked.getID())
+                        .update("guest", currentFirebaseUser.getUid());
+
+                db.collection("room")
+                        .document(clicked.getID())
+                        .update("full", true);*/
+
+                exitFrag();
+            }
+        });
+
 
         chats = rootview.findViewById(R.id.chat);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setReverseLayout(true);
         chats.setLayoutManager(manager);
 
-
-
-
         return rootview;
+    }
+
+    private void exitFrag() {
+        MainFragment frag = new MainFragment();
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(this)
+                .add(R.id.fragment_container, frag)
+                .commit();
     }
 
     private void sendMessage() {
