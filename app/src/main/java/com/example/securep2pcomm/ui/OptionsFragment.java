@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -55,6 +56,7 @@ public class OptionsFragment extends Fragment {
     private FirebaseUser currentFirebaseUser;
     private FirebaseFirestore db;
     private RecyclerView recyclerView;
+    private String name;
 
     public OptionsFragment(){
     }
@@ -76,6 +78,16 @@ public class OptionsFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
+        db.collection("users")
+                .document(currentFirebaseUser.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        name = documentSnapshot.getString("name");
+                    }
+                });
+
         loadMyRooms();
 
         add.setOnClickListener(new View.OnClickListener() {
@@ -94,10 +106,12 @@ public class OptionsFragment extends Fragment {
 
                         Map<String, Object> classAdd = new HashMap<>();
                         classAdd.put("name", getEntry);
-                        classAdd.put("users", Arrays.asList(currentFirebaseUser.getUid(), "0"));
+                        classAdd.put("owner", currentFirebaseUser.getUid());
+                        classAdd.put("owner_name", name);
+                        classAdd.put("guest", "0");
                         classAdd.put("full", false);
 
-                        db.collection("rooms")
+                        db.collection("room")
                                 .add(classAdd)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
@@ -145,8 +159,8 @@ public class OptionsFragment extends Fragment {
     }
 
     private void getMyRooms(EventListener<QuerySnapshot> listener2){
-        db.collection("rooms")
-                .whereArrayContains("users", currentFirebaseUser.getUid())
+        db.collection("room")
+                .whereEqualTo("owner", currentFirebaseUser.getUid())
                 .orderBy("name")
                 .addSnapshotListener(listener2);
     }
@@ -187,7 +201,7 @@ public class OptionsFragment extends Fragment {
             builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    db.collection("rooms")
+                    db.collection("room")
                             .document(clicked.getID())
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {

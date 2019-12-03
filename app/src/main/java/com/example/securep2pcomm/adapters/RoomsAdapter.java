@@ -9,20 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.securep2pcomm.R;
-import com.example.securep2pcomm.helpers.RoomChat;
+import com.example.securep2pcomm.helpers.AvailableRoom;
 
 import java.util.ArrayList;
 
 public class RoomsAdapter extends RecyclerView.Adapter<RoomsAdapter.RoomViewHolder>{
 
     public interface OnRoomClickListener{
-        void onClick(RoomChat clicked);
+        void onClick(AvailableRoom clicked);
     }
 
     private OnRoomClickListener mListener;
-    private ArrayList<RoomChat> rooms;
+    private ArrayList<AvailableRoom> rooms;
 
-    public RoomsAdapter(ArrayList<RoomChat> rm, OnRoomClickListener clicked){
+    public RoomsAdapter(ArrayList<AvailableRoom> rm, OnRoomClickListener clicked){
         rooms = rm;
         this.mListener = clicked;
     }
@@ -47,7 +47,7 @@ public class RoomsAdapter extends RecyclerView.Adapter<RoomsAdapter.RoomViewHold
 
     class RoomViewHolder extends RecyclerView.ViewHolder {
         TextView name;
-        RoomChat chat;
+        AvailableRoom chat;
 
         public RoomViewHolder(View itemView) {
             super(itemView);
@@ -60,7 +60,7 @@ public class RoomsAdapter extends RecyclerView.Adapter<RoomsAdapter.RoomViewHold
             });
         }
 
-        public void bind(RoomChat chat){
+        public void bind(AvailableRoom chat){
             this.chat = chat;
             name.setText(chat.getRoom_name());
         }

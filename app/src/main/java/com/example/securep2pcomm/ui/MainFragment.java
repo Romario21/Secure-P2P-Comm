@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.example.securep2pcomm.R;
 import com.example.securep2pcomm.adapters.RoomsAdapter;
-import com.example.securep2pcomm.helpers.RoomChat;
+import com.example.securep2pcomm.helpers.AvailableRoom;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,8 +28,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
 
 
 public class MainFragment extends Fragment {
@@ -45,7 +43,6 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,52 +56,41 @@ public class MainFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        db.collection("users")
-                .document(currentFirebaseUser.getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        String test = documentSnapshot.getString("active");
-                        //if(test.equals("true")){
-                            //loadOpenRooms();
-                        //}
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // Toast.makeText(, "", Toast.LENGTH_SHORT).show();
-                // Log.d("Tag",e.toString());
-                Log.i(TAG, "onFailure:");
-            }
-        });
+        loadOpenRooms();
 
         return rootview;
     }
-    /*
-    private void getAllRooms(EventListener<QuerySnapshot> listener){
+
+    private void getOpenRooms(EventListener<QuerySnapshot> listener){
         db.collection("room")
-                .whereEqualTo("student", currentFirebaseUser.getUid())
+                .whereEqualTo("guest", "0")
                 .orderBy("name")
                 .addSnapshotListener(listener);
     }
 
     private void loadOpenRooms(){
-        getAllRooms(new EventListener<QuerySnapshot>() {
+        getOpenRooms(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+            public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
                 if (e != null){
                     Log.e("MainFragment", "Listener Failed", e);
                 }
 
-                ArrayList<RoomChat> rm = new ArrayList<>();
+                ArrayList<AvailableRoom> rm = new ArrayList<>();
 
                 for (QueryDocumentSnapshot doc : snapshots) {
+                    String owner = doc.getString("owner");
+                    if (owner.equals(currentFirebaseUser.getUid()))
+                        continue;
+
                     rm.add(
-                            new RoomChat(
+                            new AvailableRoom(
                                     doc.getId(),
                                     doc.getString("name"),
-                                    doc.getString("room")
+                                    doc.getString("owner"),
+                                    doc.getString("owner_name"),
+                                    doc.getString("guest"),
+                                    doc.getBoolean("full")
                             )
                     );
                 }
@@ -117,11 +103,11 @@ public class MainFragment extends Fragment {
 
     RoomsAdapter.OnRoomClickListener listener = new RoomsAdapter.OnRoomClickListener() {
         @Override
-        public void onClick(RoomChat clicked) {
+        public void onClick(AvailableRoom clicked) {
             Log.i(TAG, "onClick: " + clicked.getID());
 
         }
-    };*/
+    };
 
 
 }
