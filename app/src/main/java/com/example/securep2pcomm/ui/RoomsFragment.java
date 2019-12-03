@@ -105,7 +105,7 @@ public class RoomsFragment extends Fragment {
         @Override
         public void onClick(SecureRoomChat clicked) {
             Log.i(TAG, "onClick: " + clicked.getID());
-            RoomFragment mess = RoomFragment.newInstance(clicked.getID(), clicked.getRoom_name());
+            RoomFragment mess = RoomFragment.newInstance(clicked.getID(), clicked.getOwner(), clicked.getOwner_name(), clicked.getGuest());
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, mess)

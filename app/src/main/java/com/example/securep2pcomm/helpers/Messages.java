@@ -3,16 +3,16 @@ package com.example.securep2pcomm.helpers;
 public class Messages {
 
     private String id;
-    private String roomName;
     private String senderId;
+    private String receiverId;
     private String senderName;
     private String message;
     private long sent;
 
-    public Messages(String id, String roomName,String senderID, String senderName, String message, long sent){
+    public Messages(String id,String senderID, String receiverId, String senderName, String message, long sent){
         this.id = id;
-        this.roomName = roomName;
         this.senderId = senderID;
+        this.receiverId = receiverId;
         this.senderName = senderName;
         this.message = message;
         this.sent = sent;
@@ -58,12 +58,12 @@ public class Messages {
         this.sent = sent;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public String getReceiverId() {
+        return receiverId;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 }
 

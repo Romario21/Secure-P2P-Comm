@@ -30,7 +30,7 @@ public class SecureRoomAdapter extends RecyclerView.Adapter<SecureRoomAdapter.Se
     private FirebaseUser currentFirebaseUser;
     private FirebaseFirestore db;
 
-
+    private String setname;
 
     public SecureRoomAdapter(ArrayList<SecureRoomChat> rm, OnSecureRoomClickListener clicked){
         rooms = rm;
@@ -60,7 +60,6 @@ public class SecureRoomAdapter extends RecyclerView.Adapter<SecureRoomAdapter.Se
     public class SecureViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         SecureRoomChat chat;
-        String setname;
 
         public SecureViewHolder(View itemview){
             super(itemview);
@@ -81,7 +80,7 @@ public class SecureRoomAdapter extends RecyclerView.Adapter<SecureRoomAdapter.Se
                 setname = chat2.getOwner_name();
             else{
                 db.collection("users")
-                        .document(chat2.getGuest())
+                        .document(chat.getGuest())
                         .get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
@@ -91,7 +90,7 @@ public class SecureRoomAdapter extends RecyclerView.Adapter<SecureRoomAdapter.Se
                         });
             }
 
-            name.setText(setname);
+            name.setText(chat.getRoom_name());
         }
     }
 

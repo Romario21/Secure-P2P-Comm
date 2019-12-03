@@ -26,20 +26,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private String userId;
     private ArrayList<Messages> mess;
 
-    public interface OnMessageClickListener{
-        void onClick(Messages clicked);
-    }
-
-    private OnMessageClickListener clicked;
-
     public MessageAdapter(){
 
     }
 
-    public MessageAdapter(ArrayList<Messages> mess, OnMessageClickListener clicked,String userId){
+    public MessageAdapter(ArrayList<Messages> mess, String userId){
         this.mess = mess;
         this.userId = userId;
-        this.clicked = clicked;
     }
 
     @NonNull
@@ -78,42 +71,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return mess.size();
     }
 
-
-
-
-
-
-
-
-
-
     public class MessageViewHolder extends RecyclerView.ViewHolder{
         TextView message;
         TextView timestamp;
-        Messages received;
         ImageView profile;
-
 
         public MessageViewHolder(final View itemView) {
             super(itemView);
             message = itemView.findViewById(R.id.chat_message);
             timestamp = itemView.findViewById(R.id.timestamp);
             profile = itemView.findViewById(R.id.profile_image);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clicked.onClick(received);
-                }
-            });
         }
 
         public void bind(final Messages chat){
-
-            received = chat;
-            final FirebaseFirestore db = FirebaseFirestore.getInstance();
-            final FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
             timestamp.setText(chat.getSenderName());
             message.setText(chat.getMessage());
         }
