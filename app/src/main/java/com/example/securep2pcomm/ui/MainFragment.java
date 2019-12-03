@@ -127,7 +127,7 @@ public class MainFragment extends Fragment {
                             .document(clicked.getID())
                             .update("full", true);
 
-                    /*RoomFragment mess = RoomFragment.newInstance(clicked.getID(), clicked.getOwner(), clicked.getOwner_name(), clicked.getRoom_name(), clicked.getGuest());
+                    /*RoomFragment mess = RoomFragment.newInstance(clicked.getID(), clicked.getOwner(), clicked.getOwner_name(), clicked.getGuest(), currentFirebaseUser.getUid());
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, mess)

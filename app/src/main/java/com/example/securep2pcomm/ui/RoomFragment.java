@@ -66,11 +66,13 @@ public class RoomFragment extends Fragment {
     private static final String ARG_PARAM2 = "owner_id";
     private static final String ARG_PARAM3 = "owner_name";
     private static final String ARG_PARAM4 = "guest_id";
+    private static final String ARG_PARAM5 = "current_id";
 
     private String room_id;
     private String owner_id;
     private String owner_name;
     private String guest_id;
+    private String current_id;
 
     private String displayname;
     private String ownName;
@@ -83,7 +85,7 @@ public class RoomFragment extends Fragment {
 
 
     //might need to change
-    public static RoomFragment newInstance(String RoomId, String owner, String ownerName, String guest){
+    public static RoomFragment newInstance(String RoomId, String owner, String ownerName, String guest, String current_id){
         RoomFragment frag = new RoomFragment();
 
         Bundle args = new Bundle();
@@ -91,6 +93,7 @@ public class RoomFragment extends Fragment {
         args.putString(ARG_PARAM2, owner);
         args.putString(ARG_PARAM3, ownerName);
         args.putString(ARG_PARAM4, guest);
+        args.putString(ARG_PARAM5, current_id);
 
         frag.setArguments(args);
 
@@ -105,6 +108,7 @@ public class RoomFragment extends Fragment {
             owner_id = getArguments().getString(ARG_PARAM2);
             owner_name = getArguments().getString(ARG_PARAM3);
             guest_id = getArguments().getString(ARG_PARAM4);
+            current_id = getArguments().getString(ARG_PARAM5);
         }
     }
 
@@ -123,11 +127,11 @@ public class RoomFragment extends Fragment {
         leave = rootview.findViewById(R.id.leave);
         mDisplay = rootview.findViewById(R.id.name);
 
-        rsa = new RSAcopy();
-        loadKeys();
-
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         db = FirebaseFirestore.getInstance();
+
+        rsa = new RSAcopy();
+        loadKeys();
 
         db.collection("users")
                 .document(currentFirebaseUser.getUid())
@@ -287,8 +291,8 @@ public class RoomFragment extends Fragment {
                                         pvk = documentSnapshot.getLong("private");
                                     }
                                 });
-                        BigInteger val = new BigInteger(mess);
-                        mess = rsa.decrypt(val, pvk, n);
+                        //BigInteger val = new BigInteger(mess);
+                        //mess = rsa.decrypt(val, pvk, n);
 
                         messages.add(
                                 new Messages(
@@ -296,7 +300,7 @@ public class RoomFragment extends Fragment {
                                         doc.getString("sender"),
                                         doc.getString("receiver"),
                                         doc.getString("sender_name"),
-                                        mess,
+                                        doc.getString("message"),
                                         doc.getLong("sent")
                                 )
                         );
@@ -320,7 +324,7 @@ public class RoomFragment extends Fragment {
         else
             receiver = guest_id;
 
-        send = rsa.encrypt(send, pk, n).toString();
+        //send = rsa.encrypt(send, pk, n).toString();
 
         message.setText("");
         mButton.setEnabled(false);
