@@ -132,7 +132,7 @@ public class OptionsFragment extends Fragment {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getActivity(),"failed to add class",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(),"failed to add room",Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }

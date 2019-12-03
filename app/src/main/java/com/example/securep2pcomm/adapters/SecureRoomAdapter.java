@@ -31,7 +31,7 @@ public class SecureRoomAdapter extends RecyclerView.Adapter<SecureRoomAdapter.Se
     @Override
     public SecureViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_private_chat, parent, false);
+                .inflate(R.layout.item_rooms, parent, false);
         return new SecureViewHolder(view);
     }
 
@@ -62,7 +62,7 @@ public class SecureRoomAdapter extends RecyclerView.Adapter<SecureRoomAdapter.Se
 
         public void bind(SecureRoomChat chat2){
             this.chat = chat2;
-            name.setText(chat.getRoom_name());
+            name.setText(chat2.getRoom_name());
         }
     }
 

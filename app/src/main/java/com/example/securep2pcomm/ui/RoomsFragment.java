@@ -60,9 +60,9 @@ public class RoomsFragment extends Fragment {
     }
 
     private void getRooms(EventListener<QuerySnapshot> listener1) {
-        db.collection("temp")
-                .document(currentFirebaseUser.getUid())
-                .collection("temp2")
+        db.collection("room")
+                .whereEqualTo("full", true)
+                .orderBy("name")
                 .addSnapshotListener(listener1);
     }
 
@@ -77,12 +77,21 @@ public class RoomsFragment extends Fragment {
 
                 ArrayList<SecureRoomChat> rm = new ArrayList<>();
                 for(QueryDocumentSnapshot doc: snapshots) {
-                    rm.add(
-                            new SecureRoomChat(
-                                    doc.getId(),
-                                    doc.getString("temp")
-                            )
-                    );
+                    String owner = doc.getString("owner");
+                    String guest = doc.getString("guest");
+                    if (owner.equals(currentFirebaseUser.getUid()) || guest.equals(currentFirebaseUser.getUid())) {
+                        rm.add(
+                                new SecureRoomChat(
+                                        doc.getId(),
+                                        doc.getString("name"),
+                                        doc.getString("owner"),
+                                        doc.getString("owner_name"),
+                                        doc.getString("guest"),
+                                        doc.getBoolean("full")
+                                )
+                        );
+
+                    }
                 }
 
                 secureRoomAdapter = new SecureRoomAdapter(rm, listener);
@@ -95,12 +104,13 @@ public class RoomsFragment extends Fragment {
     SecureRoomAdapter.OnSecureRoomClickListener listener = new SecureRoomAdapter.OnSecureRoomClickListener() {
         @Override
         public void onClick(SecureRoomChat clicked) {
-            Log.i(TAG, "onClick: " + clicked.getRoom_id());
-            //PrivateMessageFragment mess = PrivateMessageFragment.newInstance(clicked.getFriend_id(), clicked.getFriend_name());
-            //getActivity().getSupportFragmentManager()
-            //        .beginTransaction()
-            //        .replace(R.id.fragment_container, mess)
-            //        .commit();
+            Log.i(TAG, "onClick: " + clicked.getID());
+            RoomFragment mess = RoomFragment.newInstance(clicked.getID(), clicked.getRoom_name());
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, mess)
+                    .commit();
+
         }
     };
 

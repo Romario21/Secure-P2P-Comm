@@ -1,5 +1,7 @@
 package com.example.securep2pcomm.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -28,6 +30,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainFragment extends Fragment {
@@ -103,8 +107,41 @@ public class MainFragment extends Fragment {
 
     RoomsAdapter.OnRoomClickListener listener = new RoomsAdapter.OnRoomClickListener() {
         @Override
-        public void onClick(AvailableRoom clicked) {
+        public void onClick(final AvailableRoom clicked) {
             Log.i(TAG, "onClick: " + clicked.getID());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Enter Room");
+            builder.setMessage("Start Secure Communication with " + clicked.getOwner_name());
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Add the user to the available room and mark as full
+                    //will no longer appear as available
+                    db.collection("room")
+                            .document(clicked.getID())
+                            .update("guest", currentFirebaseUser.getUid());
+
+                    db.collection("room")
+                            .document(clicked.getID())
+                            .update("full", true);
+
+                    /*RoomFragment mess = RoomFragment.newInstance(clicked.getID(), clicked.getOwner(), clicked.getOwner_name(), clicked.getRoom_name(), clicked.getGuest());
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, mess)
+                            .commit();*/
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
 
         }
     };
