@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.securep2pcomm.R;
 import com.example.securep2pcomm.adapters.MessageAdapter;
 import com.example.securep2pcomm.helpers.Messages;
+import com.example.securep2pcomm.security.RSAcopy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,6 +74,12 @@ public class RoomFragment extends Fragment {
 
     private String displayname;
     private String ownName;
+
+    private RSAcopy rsa;
+
+    private long pk;
+    private long n;
+    private long pvk;
 
 
     //might need to change
@@ -114,6 +122,9 @@ public class RoomFragment extends Fragment {
         mButton = rootview.findViewById(R.id.send);
         leave = rootview.findViewById(R.id.leave);
         mDisplay = rootview.findViewById(R.id.name);
+
+        rsa = new RSAcopy();
+        loadKeys();
 
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         db = FirebaseFirestore.getInstance();
@@ -196,6 +207,27 @@ public class RoomFragment extends Fragment {
         return rootview;
     }
 
+    private void loadKeys() {
+        String receiver;
+
+        if (guest_id.equals(currentFirebaseUser.getUid()))
+            receiver = owner_id;
+        else
+            receiver = guest_id;
+
+        db.collection("users")
+                .document(receiver)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        pk = documentSnapshot.getLong("public");
+                        n = documentSnapshot.getLong("n");
+                        pvk = documentSnapshot.getLong("private");
+                    }
+                });
+    }
+
     private void removemessage(String id) {
         db.collection("chat")
                 .document(id)
@@ -242,13 +274,29 @@ public class RoomFragment extends Fragment {
                     String roomID = doc.getString("room");
 
                     if (roomID.equals(room_id)){
+
+                        String receiver = doc.getString("receiver");
+                        String mess = doc.getString("message");
+
+                        db.collection("users")
+                                .document(receiver)
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        pvk = documentSnapshot.getLong("private");
+                                    }
+                                });
+                        BigInteger val = new BigInteger(mess);
+                        mess = rsa.decrypt(val, pvk, n);
+
                         messages.add(
                                 new Messages(
                                         doc.getString("room"),
                                         doc.getString("sender"),
                                         doc.getString("receiver"),
                                         doc.getString("sender_name"),
-                                        doc.getString("message"),
+                                        mess,
                                         doc.getLong("sent")
                                 )
                         );
@@ -271,6 +319,8 @@ public class RoomFragment extends Fragment {
             receiver = owner_id;
         else
             receiver = guest_id;
+
+        send = rsa.encrypt(send, pk, n).toString();
 
         message.setText("");
         mButton.setEnabled(false);

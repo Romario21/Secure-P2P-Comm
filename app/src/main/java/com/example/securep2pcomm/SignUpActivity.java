@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.securep2pcomm.security.RSAcopy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -32,6 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private FirebaseFirestore firestore;
+    private RSAcopy rsa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +68,14 @@ public class SignUpActivity extends AppCompatActivity {
                             String regName = name.getText().toString();
                             String userID = mAuth.getCurrentUser().getUid();
 
+                            //Public and private key created
+                            rsa = new RSAcopy();
+
                             Map<String, Object> user = new HashMap<>();
                             user.put("name", regName);
+                            user.put("public", rsa.getPk());
+                            user.put("private", rsa.getPvK());
+                            user.put("n", rsa.getN());
 
                             firestore.collection("users")
                                     .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
